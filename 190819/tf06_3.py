@@ -12,7 +12,7 @@ b = tf.Variable([-0.3], tf.float32)
 x = tf.placeholder(tf.float32)
 y = tf.placeholder(tf.float32)
 
-hypothesis = x * W + b
+# hypothesis = x * W + b
 
 # cost / loss fuction
 cost = tf.reduce_sum(tf.square(hypothesis - y)) # sum of the squares
