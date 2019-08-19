@@ -12,7 +12,7 @@ Y = tf.placeholder(tf.float32, shape = [None])
 hypothesis = X * W + b
 
 # cost / loss fuction
-cost = tf.reduce_mean(tf.square(hypothesis - Y))
+cost = tf.reduce_mean(tf.square(hypothesis - Y)) # mse
 
 # optimizer
 train = tf.train.GradientDescentOptimizer(learning_rate = 0.01).minimize(cost)
