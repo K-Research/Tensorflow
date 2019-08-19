@@ -13,4 +13,4 @@ print(W)
 
 session = tf.Session()
 session.run(tf.global_variables_initializer())
-# print(session.run(W))
+print(session.run(W))
