@@ -17,7 +17,7 @@ b = tf.Variable(tf.random_normal([1]), name = 'bias')
 hypothesis = tf.sigmoid(tf.matmul(X, W) + b)
 
 # cost / loss fuction 로지스틱 리그레션에서 cost에 -가 붙는다.
-cost = -tf.reduce_mean(Y * tf.log(hypothesis) + (1 - Y) * tf.log(1 - hypothesis))
+cost = -tf.reduce_mean(Y * tf.log(hypothesis) + (1 - Y) * tf.log(1 - hypothesis)) # binary_crossentropy
 
 train = tf.train.GradientDescentOptimizer(learning_rate = 0.01).minimize(cost)
 
