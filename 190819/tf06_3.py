@@ -15,7 +15,7 @@ y = tf.placeholder(tf.float32)
 hypothesis = x * W + b
 
 # cost / loss fuction
-cost = tf.reduce_mean(tf.square(hypothesis - y)) # sum of the squares
+cost = tf.reduce_sum(tf.square(hypothesis - y)) # sum of the squares
 
 # optimizer
 train = tf.train.GradientDescentOptimizer(learning_rate = 0.01).minimize(cost)
