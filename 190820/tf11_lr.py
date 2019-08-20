@@ -41,7 +41,7 @@ with tf.Session() as sess:
         print(step, cost_val, W_val)
 
     # predict
-    print("Prediction : ", sess.run(prediction, feed_dict = {X : x_data}))
+    print("Prediction : ", sess.run(prediction, feed_dict = {X : x_test}))
 
     # Calculate the accuracy
     print("Accuracy : ", sess.run(accuracy, feed_dict = {X : x_test, Y : y_test}))
