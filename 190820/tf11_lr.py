@@ -45,3 +45,63 @@ with tf.Session() as sess:
 
     # Calculate the accuracy
     print("Accuracy : ", sess.run(accuracy, feed_dict = {X : x_test, Y : y_test}))
+
+# learning_rate = 0.1
+# Prediction :  [2 2 2]
+# Accuracy :  1.0
+
+# learning_rate = 0.5
+# Prediction :  [2 2 2]
+# Accuracy :  1.0
+
+# learning_rate = 1.0
+# Prediction :  [2 2 2]
+# Accuracy :  1.0
+
+# learning_rate = 1.3
+# Prediction :  [2 2 2]
+# Accuracy :  1.0
+
+# learning_rate = 1.305
+# Prediction :  [2 2 2]
+# Accuracy :  1.0
+
+# learning_rate = 1.308
+# Prediction :  [2 2 2]
+# Accuracy :  1.0
+
+# learning_rate = 1.309
+# Prediction :  [0 0 0]
+# Accuracy :  0.0
+
+# learning_rate = 1.31
+# Prediction :  [0 0 0]
+# Accuracy :  0.0
+
+# learning_rate = 1.33
+# Prediction :  [0 0 0]
+# Accuracy :  0.0
+
+# learning_rate = 1.35
+# Prediction :  [0 0 0]
+# Accuracy :  0.0
+
+# learning_rate = 1.4
+# Prediction :  [0 0 0]
+# Accuracy :  0.0
+
+# learning_rate = 1.5
+# Prediction :  [0 0 0]
+# Accuracy :  0.0
+
+# learning_rate = 3.0
+# Prediction :  [0 0 0]
+# Accuracy :  0.0
+
+# learning_rate = 5.0
+# Prediction :  [0 0 0]
+# Accuracy :  0.0
+
+# learning_rate = 10.0
+# Prediction :  [0 0 0]
+# Accuracy :  0.0
