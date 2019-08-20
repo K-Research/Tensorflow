@@ -14,9 +14,6 @@ mnist = input_data.read_data_sets("MNIST_data/", one_hot = True)
 # print(mnist.test.labels.shape)
 # print(type(mnist.train.images))
 
-#####################################################
-### 코딩하시오. X, Y, W, b, hypothesis, cost, train
-# 변수들을 설정한다.
 X = tf.placeholder(tf.float32, [None, 784])
 Y = tf.placeholder(tf.float32, [None, 10])
 
@@ -32,7 +29,6 @@ hypothesis = tf.nn.softmax(tf.matmul(X, W) + b)
 cost = tf.reduce_mean(-tf.reduce_sum(Y * tf.log(hypothesis), axis = 1))
 
 train = tf.train.GradientDescentOptimizer(learning_rate = 0.1).minimize(cost)
-#####################################################
 
 # Test model
 is_correct = tf.equal(tf.argmax(hypothesis, 1), tf.argmax(Y, 1))
