@@ -46,4 +46,4 @@ with tensorflow.Session() as session:
 
     # Accuracy report
     h, c, a = session.run([hypothesis, predicted, accuracy], feed_dict = {X : x_data, Y : y_data})
-    print("\nHypothesis : ", h, "\nCorrect (Y) : ", c, "\nAccuracy : ", a
+    print("\nHypothesis : ", h, "\nCorrect (Y) : ", c, "\nAccuracy : ", a)
