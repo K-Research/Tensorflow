@@ -13,7 +13,7 @@ y_data = data_zoo[ : , [-1]]
 y_data = keras.utils.to_categorical(y_data, num_classes = 7, dtype = 'float32')
 
 # print(x_data.shape)
-print(y_data.shape)
+# print(y_data.shape)
 
 X = tensorflow.placeholder("float", [None, 16])
 Y = tensorflow.placeholder("float", [None, 7])
