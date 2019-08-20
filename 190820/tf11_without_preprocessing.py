@@ -21,20 +21,13 @@ xy = numpy.array([[828.659973, 833.450012, 908100, 828.349976, 831.659973],
 x_data = xy[ : ,  : -1]
 y_data = xy[ : , [-1]]
 
-# print(x_data.shape)
-# print(y_data.shape)
-
 scaler = MinMaxScaler()
 scaler.fit(x_data)
 x_data = scaler.transform(x_data)
 
-# print(x_data)
-
 X = tensorflow.placeholder("float", [None, 4])
 Y = tensorflow.placeholder("float", [None, 1])
 
-# W = tensorflow.Variable(tensorflow.random_normal([8, 4]))
-# b = tensorflow.Variable(tensorflow.random_normal([1]))
 W = tensorflow.Variable(tensorflow.random_normal([4, 1]))
 b = tensorflow.Variable(tensorflow.random_normal([1]))
 
@@ -45,11 +38,7 @@ hypothesis = tensorflow.matmul(X, W) + b
 cost = tensorflow.reduce_mean(tensorflow.square(hypothesis - Y), axis = 1)
 
 # optimizer
-# train = tensorflow.train.GradientDescentOptimizer(learning_rate = 0.01).minimize(cost)
-# train = tensorflow.train.AdadeltaOptimizer(learning_rate = 0.1).minimize(cost)
-# train = tensorflow.train.AdagradOptimizer(learning_rate = 0.1).minimize(cost)
-# train = tensorflow.train.AdagradDAOptimizer(learning_rate = 0.1).minimize(cost)
-train = tensorflow.train.AdamOptimizer(learning_rate = 0.1).minimize(cost)
+train = tensorflow.train.AdamOptimizer(learning_rate = 2.0).minimize(cost)
 
 # Launch graph
 sess = tensorflow.Session()
@@ -70,3 +59,15 @@ predict = predict.reshape((-1, ))
 print("RMAE:", RMAE(y_data_reshape, predict))
 print("RMSE:", RMSE(y_data_reshape, predict))
 print("R2:", r2_score(y_data_reshape, predict))
+
+# Prediction : [[831.44824]
+#  [827.7784 ]
+#  [823.5128 ]
+#  [818.7886 ]
+#  [821.7996 ]
+#  [819.60046]
+#  [812.69006]
+#  [810.1714 ]]
+# RMAE: 0.9261519590066775
+# RMSE: 1.1596714307642955
+# R2: 0.97053042356385
