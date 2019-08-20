@@ -1,3 +1,4 @@
+import keras
 import numpy
 import pandas
 import tensorflow
@@ -9,27 +10,30 @@ data_zoo = numpy.loadtxt('D:/Bitcamp/Data/data-04-zoo.csv', delimiter = ',', dty
 x_data = data_zoo[ : , 0 : -1]
 y_data = data_zoo[ : , [-1]]
 
+y_data = keras.utils.to_categorical(y_data, num_classes = 7, dtype = 'float32')
+
 # print(x_data.shape)
-# print(y_data.shape)
+print(y_data.shape)
 
 X = tensorflow.placeholder("float", [None, 16])
-Y = tensorflow.placeholder("float", [None, 1])
+Y = tensorflow.placeholder("float", [None, 7])
 
 W = tensorflow.Variable(tensorflow.random_normal([16, 7]), name = 'weight')
 b = tensorflow.Variable(tensorflow.random_normal([7]), name = 'bias')
 
-# Hypothesis using sigmoid : tensorflow.div(1., 1. + tensorflow.exp(tensorflow.matmul(X, W)))
-hypothesis = tensorflow.sigmoid(tensorflow.matmul(X, W) + b) # activation = 'sigmoid'
+# tensorflow.nn.softmax computes fotmax activations
+# softmax = exp(logits) / reduce_sum(exp(logits), dim)
+hypothesis = tensorflow.nn.softmax(tensorflow.matmul(X, W) + b) # activation = 'softmax'
 
-# cost / loss fuction 로지스틱 리그레션에서 cost에 -가 붙는다.
-cost = -tensorflow.reduce_mean(Y * tensorflow.log(hypothesis) + (1 - Y) * tensorflow.log(1 - hypothesis)) # loss = 'binary_crossentropy'
+# Cross entropy cost / loss
+cost = tensorflow.reduce_mean(-tensorflow.reduce_sum(Y * tensorflow.log(hypothesis), axis = 1)) # loss = 'categorical_crossentropy'
 
 train = tensorflow.train.GradientDescentOptimizer(learning_rate = 0.01).minimize(cost)
 
-# Accuracy computation
-# True if hypothesis > 0.5 else False
-predicted = tensorflow.cast(hypothesis > 0.5, dtype = tensorflow.float32)
-accuracy = tensorflow.reduce_mean(tensorflow.cast(tensorflow.equal(predicted, Y), dtype = tensorflow.float32))
+# predicted = tensorflow.argmax(hypothesis, 1)
+predicted = tensorflow.equal(tensorflow.argmax(hypothesis, 1), tensorflow.argmax(y_data, 1))
+# accuracy = tensorflow.reduce_mean(tensorflow.cast(predicted, dtype = tensorflow.float32))
+accuracy = tensorflow.reduce_mean(tensorflow.cast(predicted, dtype = tensorflow.float32))
 
 # Launch graph
 with tensorflow.Session() as session:
