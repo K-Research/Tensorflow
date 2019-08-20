@@ -30,9 +30,7 @@ cost = tensorflow.reduce_mean(-tensorflow.reduce_sum(Y * tensorflow.log(hypothes
 
 train = tensorflow.train.GradientDescentOptimizer(learning_rate = 0.01).minimize(cost)
 
-# predicted = tensorflow.argmax(hypothesis, 1)
 predicted = tensorflow.equal(tensorflow.argmax(hypothesis, 1), tensorflow.argmax(y_data, 1))
-# accuracy = tensorflow.reduce_mean(tensorflow.cast(predicted, dtype = tensorflow.float32))
 accuracy = tensorflow.reduce_mean(tensorflow.cast(predicted, dtype = tensorflow.float32))
 
 # Launch graph
@@ -48,4 +46,4 @@ with tensorflow.Session() as session:
 
     # Accuracy report
     h, c, a = session.run([hypothesis, predicted, accuracy], feed_dict = {X : x_data, Y : y_data})
-    print("\nHypothesis : ", h, "\nCorrect (Y) : ", c, "\nAccuracy : ", a)
+    print("\nHypothesis : ", h, "\nCorrect (Y) : ", c, "\nAccuracy : ", a
