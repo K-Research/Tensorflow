@@ -30,10 +30,10 @@ with tf.Session() as sess:
     sess.run(tf.global_variables_initializer())
 
     for step in range(10001):
-        _, cost_val, w_val = sess.run([train, cost, W2], feed_dict = {X : x_data, Y : y_data})
+        _, cost_val, W1_val, W2_val = sess.run([train, cost, W1, W2], feed_dict = {X : x_data, Y : y_data})
 
         if step % 100 == 0:
-            print(step, cost_val, w_val)
+            print(step, cost_val, W1_val, W2_val)
 
     # Accuracy report
     h, c, a = sess.run([hypothesis, predicted, accuracy], feed_dict = {X : x_data, Y : y_data})
