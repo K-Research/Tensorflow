@@ -1,5 +1,6 @@
 import numpy
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
+from sklearn.preprocessing import MinMaxScaler
 import tensorflow
 
 def RMAE(y_data, predict):
@@ -22,6 +23,12 @@ y_data = xy[ : , [-1]]
 
 # print(x_data.shape)
 # print(y_data.shape)
+
+scaler = MinMaxScaler()
+scaler.fit(x_data)
+x_data = scaler.transform(x_data)
+
+# print(x_data)
 
 X = tensorflow.placeholder("float", [None, 4])
 Y = tensorflow.placeholder("float", [None, 1])
@@ -50,7 +57,7 @@ sess = tensorflow.Session()
 # Initialize Tensorflow variables
 sess.run(tensorflow.global_variables_initializer())
 
-for step in range(101):
+for step in range(10001):
     cost_val, hy_val, _ = sess.run([cost, hypothesis, train], feed_dict = {X : x_data, Y : y_data})
     print(step, "Cost : ", cost_val, "\nPrediction : \n", hy_val)
 
