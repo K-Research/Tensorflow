@@ -12,6 +12,13 @@ def RMAE(y_data, predict):
 def RMSE(y_data, predict):
     return numpy.sqrt(mean_squared_error(y_test, predict))
 
+def parametric_relu(_x, name):
+    # with tensorflow.variable_scope("parametric_relu", reuse = tensorflow.AUTO_REUSE):
+    alphas = tensorflow.get_variable(name, _x.get_shape()[-1], initializer = tensorflow.constant_initializer(0.0), dtype = tensorflow.float32)
+    pos = tensorflow.nn.relu(_x)
+    neg = alphas * (_x - abs(_x)) * 0.5
+    return pos + neg
+
 tensorflow.set_random_seed(777)
 
 x = numpy.load("./Data/boston_housing_x.npy")
@@ -30,31 +37,30 @@ y_test = y_test.reshape(-1, 1)
 X = tensorflow.placeholder(tensorflow.float32, [None, 13])
 Y = tensorflow.placeholder(tensorflow.float32, [None, 1])
 
-W1 = tensorflow.get_variable(name = 'Weight1', shape = [13, 8], initializer = tensorflow.zeros_initializer())
-b1 = tensorflow.Variable(tensorflow.random_normal([8]), name = 'Bias1')
-l1 = tensorflow.nn.leaky_relu(tensorflow.matmul(X, W1) + b1)
+W1 = tensorflow.get_variable(name = 'Weight1', shape = [13, 4], initializer = tensorflow.zeros_initializer())
+b1 = tensorflow.Variable(tensorflow.random_normal([4]), name = 'Bias1')
+# l1 = tensorflow.nn.leaky_relu(tensorflow.matmul(X, W1) + b1)
+# l1 = tensorflow.keras.layers.PReLU(tensorflow.matmul(X, W1) + b1)
+l1 = parametric_relu(tensorflow.matmul(X, W1) + b1, 'PReLU1')
 # l1 = tensorflow.sigmoid(tensorflow.matmul(X, W1) + b1)
 
-W2 = tensorflow.get_variable(name = 'Weight2', shape = [8, 4], initializer = tensorflow.zeros_initializer())
-b2 = tensorflow.Variable(tensorflow.random_normal([4]), name = 'Bias2')
-l2 = tensorflow.nn.leaky_relu(tensorflow.matmul(l1, W2) + b2)
+W2 = tensorflow.get_variable(name = 'Weight2', shape = [4, 2], initializer = tensorflow.zeros_initializer())
+b2 = tensorflow.Variable(tensorflow.random_normal([2]), name = 'Bias2')
+# l2 = tensorflow.nn.leaky_relu(tensorflow.matmul(l1, W2) + b2)
+l2 = parametric_relu(tensorflow.matmul(l1, W2) + b2, 'PReLU2')
 # l2 = tensorflow.sigmoid(tensorflow.matmul(l1, W2) + b2)
 
-W3 = tensorflow.get_variable(name = 'Weight3', shape = [4, 2], initializer = tensorflow.zeros_initializer())
-b3 = tensorflow.Variable(tensorflow.random_normal([2]), name = 'Bias3')
-l3 = tensorflow.nn.leaky_relu(tensorflow.matmul(l2, W3) + b3)
-# l3 = tensorflow.sigmoid(tensorflow.matmul(l2, W3) + b3)
-
-W4 = tensorflow.get_variable(name = 'Weight4', shape = [2, 1], initializer = tensorflow.zeros_initializer())
-b4 = tensorflow.Variable(tensorflow.random_normal([1]), name = 'Bias4')
-
-hypothesis = tensorflow.nn.leaky_relu(tensorflow.matmul(l3, W4) + b4)
+W3 = tensorflow.get_variable(name = 'Weight3', shape = [2, 1], initializer = tensorflow.zeros_initializer())
+b3 = tensorflow.Variable(tensorflow.random_normal([1]), name = 'Bias3')
+# hypothesis = tensorflow.nn.leaky_relu(tensorflow.matmul(l2, W3) + b3)
+hypothesis = parametric_relu(tensorflow.matmul(l2, W3) + b3, 'PReLU3')
 
 # Simplified cost / loss function
 cost = tensorflow.reduce_mean(tensorflow.square(hypothesis - Y))
 
 # Minimize
-train = tensorflow.train.GradientDescentOptimizer(learning_rate = 0.1).minimize(cost)
+# train = tensorflow.train.GradientDescentOptimizer(learning_rate = 1e-5).minimize(cost)
+train = tensorflow.train.AdamOptimizer(learning_rate = 1e-2).minimize(cost)
 
 # Launch the graph in a session.
 session = tensorflow.Session()
@@ -75,3 +81,7 @@ predict = predict.reshape((-1, ))
 print("RMAE:", RMAE(y_test_reshape, predict))
 print("RMSE:", RMSE(y_test_reshape, predict))
 print("R2:", r2_score(y_test_reshape, predict))
+
+# RMAE: 1.670594350652709
+# RMSE: 4.298444520887089
+# R2: 0.7936536607814402
