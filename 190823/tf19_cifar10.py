@@ -68,9 +68,9 @@ W3 = tf.Variable(tf.random_normal([3, 3, 64, 128], stddev = 0.01))
 L3 = tf.nn.conv2d(L2, W3, strides = [1, 1, 1, 1], padding = 'SAME')
 L3 = tf.nn.relu(L3)
 L3 = tf.nn.max_pool(L3, ksize = [1, 2, 2, 1], strides = [1, 2, 2, 1], padding = 'SAME')
-L3_flat = tf.reshape(L3, [-1, 8 * 8 * 128])
+L3_flat = tf.reshape(L3, [-1, 4 * 4 * 128])
 
-W4 = tf.get_variable("W4", shape = [8192, 10], initializer = tf.contrib.layers.xavier_initializer())
+W4 = tf.get_variable("W4", shape = [4 * 4 * 128, 10], initializer = tf.contrib.layers.xavier_initializer())
 b1 = tf.Variable(tf.random_normal([10]))
 logits = tf.matmul(L3_flat, W4) + b1
 
@@ -91,9 +91,6 @@ for epoch in range(training_epochs):
     for i in range(total_batch):
             # batch_xs, batch_ys = next_batch(batch_size, x_train, y_train_one_hot.eval(session = sess))
             batch_xs, batch_ys = next_batch(batch_size, x_train, y_train)
-            print(x_train.shape)
-            print(batch_xs.shape)
-            print(batch_ys.shape)
             feed_dict = {X : batch_xs, Y : batch_ys}
             c, _ = sess.run([cost, optimizer], feed_dict = feed_dict)
             avg_cost += c / total_batch
