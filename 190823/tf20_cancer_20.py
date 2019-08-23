@@ -54,12 +54,12 @@ with tf.Session() as sess:
     for step in range(3000):
         _, cost_val, acc_val = sess.run([train, cost, accuracy], feed_dict = {X : x_train, Y : y_train})
         if step % 100 == 0:
-            print("Step: {:5}\tCost: {:f}\tAcc: {:.2%}".format(step, cost_val, acc_val))
+            print("Step : {:5}\tCost : {:f}\tAcc: {:.2%}".format(step, cost_val, acc_val))
             
     # Let's see if we can predict
     a, pred = sess.run([accuracy, predicted], feed_dict={X : x_test,Y : y_test})
     # y_data: (N, 1) = flatten => (N, ) matches pred.shape
     for p, y in zip(pred, y_train.flatten()):
-        print("[{}] Prediction: {} True Y: {}".format(p == int(y), p, int(y)))
+        print("[{}] Prediction : {} True Y : {}".format(p == int(y), p, int(y)))
     print(a)
     writer = tf.summary.FileWriter('./board/sample_1', sess.graph)

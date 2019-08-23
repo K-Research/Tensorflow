@@ -55,7 +55,7 @@ with tf.Session() as sess:
         _, cost_val = sess.run([train, cost], feed_dict = feed_dict)
 
         if step % 500 == 0:
-            print("Step: {:5}\tCost: {:f}".format(step, cost_val))
+            print("Step : {:5}\tCost : {:f}".format(step, cost_val))
             
     #### model predict#################################################
     # print(sess.run(hypothesis, feed_dict = feed_dict))
