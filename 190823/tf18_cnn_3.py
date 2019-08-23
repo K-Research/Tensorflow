@@ -35,12 +35,28 @@ W2 = tf.Variable(tf.random_normal([3, 3, 32, 64], stddev = 0.01))
 L2 = tf.nn.conv2d(L1, W2, strides = [1, 1, 1, 1], padding = 'SAME')
 L2 = tf.nn.relu(L2)
 L2 = tf.nn.max_pool(L2, ksize = [1, 2, 2, 1], strides = [1, 2, 2, 1], padding = 'SAME')
-L2_flat = tf.reshape(L2, [-1, 7 * 7 * 64])
 
-# Final FC 7 x 7 x 64 inputs -> 10 outputs
-W3 = tf.get_variable("W3", shape = [7 * 7 * 64, 10], initializer = tf.contrib.layers.xavier_initializer())
-b = tf.Variable(tf.random_normal([10]))
-logits = tf.matmul(L2_flat, W3) + b
+# L3 ImgIn shape = (?, 4, 4, 128)
+W3 = tf.Variable(tf.random_normal([3, 3, 64, 128], stddev = 0.01))
+L3 = tf.nn.conv2d(L2, W3, strides = [1, 1, 1, 1], padding = 'SAME')
+L3 = tf.nn.relu(L3)
+L3 = tf.nn.max_pool(L3, ksize = [1, 2, 2, 1], strides = [1, 2, 2, 1], padding = 'SAME')
+
+# L4 ImgIn shape = (?, 2, 2, 256)
+W4 = tf.Variable(tf.random_normal([3, 3, 128, 256], stddev = 0.01))
+L4 = tf.nn.conv2d(L3, W4, strides = [1, 1, 1, 1], padding = 'SAME')
+L4 = tf.nn.relu(L4)
+L4 = tf.nn.max_pool(L4, ksize = [1, 2, 2, 1], strides = [1, 2, 2, 1], padding = 'SAME')
+L4_flat = tf.reshape(L4, [-1, 2 * 2 * 256])
+
+# Final FC 2 x 2 x 256 inputs -> 10 outputs
+W5 = tf.get_variable("W5", shape = [2 * 2 * 256, 128], initializer = tf.contrib.layers.xavier_initializer())
+b1 = tf.Variable(tf.random_normal([128]))
+L5 = tf.matmul(L4_flat, W5) + b1
+
+W6 = tf.get_variable("W6", shape = [128, 10], initializer = tf.contrib.layers.xavier_initializer())
+b2 = tf.Variable(tf.random_normal([10]))
+logits = tf.matmul(L5, W6) + b2
 
 # define cost / loss & optimizer
 cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits = logits, labels = Y))
@@ -75,3 +91,5 @@ print('Accuracy : ', sess.run(accuracy, feed_dict = {X : mnist.test.images, Y : 
 r = random.randint(0, mnist.test.num_examples - 1)
 print("Label : ", sess.run(tf.argmax(mnist.test.labels[r : r + 1], 1)))
 print("Prediction : ", sess.run(tf.argmax(logits, 1), feed_dict = {X : mnist.test.images[r : r + 1]}))
+
+# Accuracy :  0.9926
