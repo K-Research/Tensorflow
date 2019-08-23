@@ -3,7 +3,7 @@ from keras.utils import np_utils
 import numpy
 import random
 import tensorflow as tf
-from tensorflow.keras.datasets.cifar10 import load_data
+from keras.datasets.cifar10 import load_data
 
 # 다음 배치를 읽어오기 위한 next_batch 유틸리티 함수를 정의합니다.
 def next_batch(number, data, labels):
@@ -20,8 +20,6 @@ def next_batch(number, data, labels):
 
 tf.set_random_seed(777) # reproducibility
 
-# mnist = input_data.read_data_sets("MNIST_data/", one_hot = True)
-# (x_train, y_train), (x_test, y_test) = cifar10.load_data()
 (x_train, y_train), (x_test, y_test) = load_data()
 
 # hyper parameters
@@ -41,13 +39,17 @@ cifar10_train_num_examples = 50000
 # y_train = np_utils.to_categorical(y_train, NB_CLASSES)
 # y_test = np_utils.to_categorical(y_test, NB_CLASSES)
 
-y_train_one_hot = tf.squeeze(tf.one_hot(y_train, 10), axis = 1)
-y_test_one_hot = tf.squeeze(tf.one_hot(y_test, 10), axis = 1)
+# y_train_one_hot = tf.squeeze(tf.one_hot(y_train, 10), axis = 1) # (50000, 1)
+# y_test_one_hot = tf.squeeze(tf.one_hot(y_test, 10), axis = 1) # (10000, 1)
 
 # input place holders
 X = tf.placeholder(tf.float32, [None, 32, 32, 3])
-# X_img = tf.reshape(X, [-1, 28, 28, 1]) # img 28 x 28 x 1 (black / white)
-Y = tf.placeholder(tf.float32, [None, 10])
+Y = tf.placeholder(tf.int32, [None, 1])
+
+Y_one_hot = tf.one_hot(Y, NB_CLASSES) # one-hot
+# print("one_hot:", Y_one_hot)
+Y_one_hot = tf.reshape(Y_one_hot, [-1, NB_CLASSES])
+# print("reshape one_hot:", Y_one_hot)
 
 # L1 ImgIn shape = (?, 32, 32, 3)
 W1 = tf.Variable(tf.random_normal([3, 3, 3, 32], stddev = 0.01))
@@ -62,34 +64,36 @@ L2 = tf.nn.relu(L2)
 L2 = tf.nn.max_pool(L2, ksize = [1, 2, 2, 1], strides = [1, 2, 2, 1], padding = 'SAME')
 
 # L3 ImgIn shape = (?, 8, 8, 64)
-L3 = tf.layers.conv2d(L2, 64, [3, 3], activation = tf.nn.relu)
-L3 = tf.layers.max_pooling2d(L3, [2, 2], [2, 2])
-L3 = tf.layers.dropout(L3, 0.7)
+W3 = tf.Variable(tf.random_normal([3, 3, 64, 128], stddev = 0.01))
+L3 = tf.nn.conv2d(L2, W3, strides = [1, 1, 1, 1], padding = 'SAME')
+L3 = tf.nn.relu(L3)
+L3 = tf.nn.max_pool(L3, ksize = [1, 2, 2, 1], strides = [1, 2, 2, 1], padding = 'SAME')
+L3_flat = tf.reshape(L3, [-1, 8 * 8 * 128])
 
-# L4 ImgIn shape = (?, 4, 4, 128)
-L4 = tf.contrib.layers.flatten(L3)
-L4 = tf.layers.dense(L4, 256, activation = tf.nn.relu)
-L4 = tf.layers.dropout(L4, 0.5)
-
-logits = tf.layers.dense(L4, 10, activation = None)
+W4 = tf.get_variable("W4", shape = [8192, 10], initializer = tf.contrib.layers.xavier_initializer())
+b1 = tf.Variable(tf.random_normal([10]))
+logits = tf.matmul(L3_flat, W4) + b1
 
 # define cost / loss & optimizer
-cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits = logits, labels = Y))
+cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits = logits, labels = Y_one_hot))
 optimizer = tf.train.AdamOptimizer(learning_rate = learning_rate).minimize(cost)
 
 # initialize
 sess = tf.Session()
 sess.run(tf.global_variables_initializer())
 
-# train my model
+# train my model 
 print('Learning started. It takes sometime.')
 for epoch in range(training_epochs):
     avg_cost = 0
-    total_batch = int(cifar10_train_num_examples / batch_size)
+    total_batch = x_train.shape[0] // batch_size
 
     for i in range(total_batch):
-            # batch_xs, batch_ys = mnist.train.next_batch(batch_size)
-            batch_xs, batch_ys = next_batch(batch_size, x_train, y_train_one_hot.eval(session = sess))
+            # batch_xs, batch_ys = next_batch(batch_size, x_train, y_train_one_hot.eval(session = sess))
+            batch_xs, batch_ys = next_batch(batch_size, x_train, y_train)
+            print(x_train.shape)
+            print(batch_xs.shape)
+            print(batch_ys.shape)
             feed_dict = {X : batch_xs, Y : batch_ys}
             c, _ = sess.run([cost, optimizer], feed_dict = feed_dict)
             avg_cost += c / total_batch
