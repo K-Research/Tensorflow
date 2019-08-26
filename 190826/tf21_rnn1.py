@@ -94,3 +94,5 @@ with tf.Session() as sess:
 
         result_str = [idx2char[c] for c in np.squeeze(result)]
         print("\nPrediction str : ", ''.join(result_str))
+
+# Prediction str :  ihello
