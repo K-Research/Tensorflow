@@ -14,7 +14,7 @@ from sklearn.preprocessing import OneHotEncoder
 
 enc = OneHotEncoder()
 enc.fit(_data)
-_data = enc.transform(_data).toarray().astype('float32') # scikit-learn의 OneHotEncoder를 실행하면 알파벳 순으로 함, float32로 형 변환.
+_data = enc.transform(_data).toarray().astype('float32') # scikit-learn의 OneHotEncoder를 실행하면 알파벳 순으로 함, float64에서 float32로 형 변환.
 
 # print(_data)
 # print(_data.shape) # (7, 5)
