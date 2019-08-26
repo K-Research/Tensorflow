@@ -67,7 +67,7 @@ outputs, _states = tf.nn.dynamic_rnn(cell, x_data, dtype = tf.float32)
 # print(outputs.shape) # (1, 6, 5)
 
 # FC layer
-X_for_fc = tf.reshape(outputs, [-1, hidden_size]) # (6, 5)
+# X_for_fc = tf.reshape(outputs, [-1, hidden_size]) # (6, 5)
 
 # print(X_for_fc)
 
@@ -82,7 +82,7 @@ loss = tf.reduce_mean(sequence_loss)
 # train = tf.train.AdamOptimizer(learning_rate = 0.1).minimize(loss)
 train = tf.compat.v1.train.AdamOptimizer(learning_rate = 0.1).minimize(loss)
 
-prediction = tf.argmax(outputs, axis = 2)
+prediction = tf.argmax(outputs, axis = 2) # OneHotEncode에서 원래 값으로 변환.
 
 with tf.Session() as sess:
     sess.run(tf.global_variables_initializer())
