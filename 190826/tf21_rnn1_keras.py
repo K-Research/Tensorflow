@@ -71,3 +71,8 @@ print('Prediction : ', prediction)
 
 result_str = [idx2char[c] for c in np.squeeze(prediction)]
 print("\nPrediction str : ", ''.join(result_str))
+
+# Accuracy : 1.0000
+# Prediction :  [[2 1 0 3 3 4]]
+
+# Prediction str :  ihello
