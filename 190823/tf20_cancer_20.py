@@ -20,9 +20,9 @@ y_train = cancer_data[ : , [-1]]
 X = tf.placeholder(tf.float32, [None, 30])
 Y = tf.placeholder(tf.float32, [None, 1])
 
-print(x_train.shape, y_train.shape)
+# print(x_train.shape, y_train.shape)
 x_train, x_test, y_train, y_test = train_test_split(x_train,y_train,test_size=0.2)
-print(x_train.shape, y_train.shape)
+# print(x_train.shape, y_train.shape)
 
 # w1 = tf.get_variable("w1", shape = [?, ?], initializer = tf.random_uniform_initializer())
 # b1 = tf.Variable(tf.random_normal([512]))
